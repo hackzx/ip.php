@@ -2,8 +2,9 @@
 
 $ak = '';
 $token = '';
-$ip = $_REQUEST['ip'];
+// $ip = $_REQUEST['ip'];
 $ip = isset($_REQUEST['ip']) ? $_REQUEST['ip'] : $_SERVER["REMOTE_ADDR"];
+$ip = gethostbyname($ip);
 // $GPS_url = 'http://api.map.baidu.com/highacciploc/v1?&qterm=pc&ak=' . $ak . '&coord=bd09ll&qcip=' . $ip;
 $GPS_url = 'https://apis.map.qq.com/ws/location/v1/ip?ip=' . $ip . '&key=' . $token;
 $GPS_json = file_get_contents($GPS_url);
@@ -16,7 +17,7 @@ $lng = $GPS_obj->result->location->lng;
 $Address_url = 'http://api.map.baidu.com/geocoder/v2/?output=json&pois=0&ak=' . $ak . '&location=' . $lat . ',' . $lng;
 $Address_json = file_get_contents($Address_url);
 $Address_obj = json_decode($Address_json);
-$Address = $Address_obj->result->formatted_address . $Address_obj->result->addressComponent->direction . ',' . $Address_obj->result->sematic_description;
+$Address = $Address_obj->result->formatted_address . $Address_obj->result->addressComponent->direction . ' ' . $Address_obj->result->sematic_description;
 
 if (stripos($_SERVER['HTTP_USER_AGENT'], "curl") !== false) {
 	echo $ip . "\n" . $Address;
